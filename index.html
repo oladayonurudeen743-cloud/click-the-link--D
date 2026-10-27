@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Special Question for You 💕</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Poppins & Dancing Script -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      user-select: none;
+    }
+    .font-script {
+      font-family: 'Dancing Script', cursive;
+    }
+    /* Floating background elements */
+    @keyframes floatPetal {
+      0% {
+        transform: translateY(-20px) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.8;
+      }
+      80% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg) scale(1.1);
+        opacity: 0;
+      }
+    }
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatPetal linear infinite;
+    }
+    /* Bounce and pulse */
+    @keyframes softPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .pulse-btn {
+      animation: softPulse 2s infinite ease-in-out;
+    }
+    /* Card Glassmorphism */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 20px 45px -10px rgba(244, 114, 182, 0.2), 0 8px 16px -8px rgba(0, 0, 0, 0.05);
+    }
+    /* Smooth Transitions */
+    .step-card {
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-dodge {
+      position: absolute;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-tr from-pink-100 via-rose-50 to-pink-200 text-gray-700 flex items-center justify-center p-4 relative overflow-hidden">
+
+  <!-- Floating Falling Petals Container -->
+  <div id="petals-container" class="pointer-events-none fixed inset-0 overflow-hidden z-0"></div>
+
+  <!-- Decorative Corner Floral Accents -->
+  <!-- Top Left Flower -->
+  <div class="fixed top-0 left-0 pointer-events-none z-10 w-32 h-32 sm:w-44 sm:h-44 opacity-90 transition-transform hover:scale-105 duration-500">
+    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full drop-shadow-md">
+      <!-- Stem and leaves -->
+      <path d="M-10,-10 C40,40 60,80 50,140" stroke="#86efac" stroke-width="4" stroke-linecap="round"/>
+      <path d="M25,25 Q60,20 70,5 C75,30 50,45 25,25 Z" fill="#bbf7d0" opacity="0.9"/>
+      <path d="M40,65 Q80,75 95,60 C90,90 65,95 40,65 Z" fill="#86efac" opacity="0.9"/>
+      <!-- Flower 1 -->
+      <g transform="translate(60, 50)">
+        <circle cx="0" cy="-18" r="14" fill="#fbcfe8" />
+        <circle cx="17" cy="-5" r="14" fill="#fbcfe8" />
+        <circle cx="11" cy="15" r="14" fill="#fbcfe8" />
+        <circle cx="-11" cy="15" r="14" fill="#fbcfe8" />
+        <circle cx="-17" cy="-5" r="14" fill="#fbcfe8" />
+        <circle cx="0" cy="0" r="9" fill="#f43f5e" />
+        <circle cx="0" cy="0" r="4" fill="#fef08a" />
+      </g>
+      <!-- Small Blossom -->
+      <g transform="translate(115, 30) scale(0.65)">
+        <circle cx="0" cy="-16" r="12" fill="#fda4af" />
+        <circle cx="15" cy="-5" r="12" fill="#fda4af" />
+        <circle cx="9" cy="13" r="12" fill="#fda4af" />
+        <circle cx="-9" cy="13" r="12" fill="#fda4af" />
+        <circle cx="-15" cy="-5" r="12" fill="#fda4af" />
+        <circle cx="0" cy="0" r="7" fill="#fb7185" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- Bottom Right Flower -->
+  <div class="fixed bottom-0 right-0 pointer-events-none z-10 w-36 h-36 sm:w-48 sm:h-48 opacity-90 transition-transform duration-500">
+    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full drop-shadow-md rotate-180">
+      <path d="M-10,-10 C45,45 65,85 55,145" stroke="#86efac" stroke-width="4" stroke-linecap="round"/>
+      <path d="M28,28 Q65,22 75,6 C80,32 55,48 28,28 Z" fill="#bbf7d0" opacity="0.9"/>
+      <path d="M42,68 Q85,78 100,62 C95,95 68,100 42,68 Z" fill="#86efac" opacity="0.8"/>
+      <g transform="translate(65, 55)">
+        <circle cx="0" cy="-20" r="15" fill="#fbcfe8"/>
+        <circle cx="19" cy="-6" r="15" fill="#fbcfe8"/>
+        <circle cx="12" cy="17" r="15" fill="#fbcfe8"/>
+        <circle cx="-12" cy="17" r="15" fill="#fbcfe8"/>
+        <circle cx="-19" cy="-6" r="15" fill="#fbcfe8"/>
+        <circle cx="0" cy="0" r="10" fill="#f43f5e"/>
+        <circle cx="0" cy="0" r="5" fill="#fef08a"/>
+      </g>
+      <g transform="translate(120, 32) scale(0.6)">
+        <circle cx="0" cy="-16" r="12" fill="#fda4af"/>
+        <circle cx="15" cy="-5" r="12" fill="#fda4af"/>
+        <circle cx="9" cy="13" r="12" fill="#fda4af"/>
+        <circle cx="-9" cy="13" r="12" fill="#fda4af"/>
+        <circle cx="-15" cy="-5" r="12" fill="#fda4af"/>
+        <circle cx="0" cy="0" r="7" fill="#fb7185"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Main Container Card -->
+  <main class="relative z-20 w-full max-w-lg mx-auto">
+
+    <!-- STEP 1: The Trap (Date Question) -->
+    <div id="step-1" class="step-card glass-card rounded-3xl p-6 sm:p-10 text-center relative border border-pink-100 min-h-[420px] flex flex-col justify-between">
+      <div>
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-pink-100 text-pink-500 rounded-full mb-4 shadow-inner text-3xl">
+          💌
+        </div>
+        <p class="text-sm font-semibold tracking-widest text-pink-400 uppercase mb-1">Hey gorgeous</p>
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 font-script tracking-wide mb-3">
+          Are we hanging out tomorrow? ✨
+        </h1>
+        <p class="text-gray-500 text-sm max-w-xs mx-auto">
+          I've been thinking about you, and I have a very important question to ask...
+        </p>
+      </div>
+
+      <!-- Button Arena (No button dodges inside here) -->
+      <div id="arena" class="relative w-full h-44 sm:h-48 my-3 flex items-center justify-center">
+        <!-- YES Button -->
+        <button id="btn-yes" class="pulse-btn z-10 px-8 py-3.5 bg-gradient-to-r from-pink-500 to-rose-400 hover:from-pink-600 hover:to-rose-500 text-white font-semibold rounded-full shadow-lg shadow-pink-300/60 transform active:scale-95 transition-all duration-200 flex items-center gap-2 text-lg">
+          <span>Yes! 💕</span>
+        </button>
+
+        <!-- NO Button (The Runner) -->
+        <button id="btn-no" class="btn-dodge px-7 py-3 bg-white/90 text-gray-600 font-medium rounded-full shadow-md border border-pink-200 hover:bg-gray-50 text-base" style="left: 68%; top: 50%; transform: translate(-50%, -50%);">
+          <span>No 🙅‍♀️</span>
+        </button>
+      </div>
+
+      <!-- Playful Subtext -->
+      <div class="text-xs text-pink-400/80 italic font-light">
+        *Tip: Think carefully before you decide! 😉
+      </div>
+    </div>
+
+    <!-- STEP 2: Pick Time Slot -->
+    <div id="step-2" class="step-card glass-card rounded-3xl p-6 sm:p-10 text-center relative border border-pink-100 hidden">
+      <div class="inline-flex items-center justify-center w-14 h-14 bg-pink-100 text-pink-500 rounded-full mb-3 text-2xl shadow-inner">
+        ⏰
+      </div>
+      <p class="text-xs font-semibold tracking-widest text-pink-400 uppercase mb-1">Step 1 of 2</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 font-script mb-2">
+        Yay! What time works best for you? ✨
+      </h2>
+      <p class="text-gray-500 text-sm mb-6">Choose whatever works best for your schedule:</p>
+
+      <!-- Time Options Grid -->
+      <div class="grid grid-cols-1 gap-3 text-left mb-8" id="time-options">
+        <label class="time-card flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 hover:bg-pink-50/50 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span class="text-xl">☀️</span>
+            <span class="font-medium text-gray-700">2:00 PM – 3:00 PM</span>
+          </div>
+          <input type="radio" name="time" value="2:00 PM – 3:00 PM" class="w-5 h-5 accent-pink-500 rounded-full">
+        </label>
+
+        <label class="time-card flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 hover:bg-pink-50/50 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span class="text-xl">☕</span>
+            <span class="font-medium text-gray-700">3:00 PM – 4:00 PM</span>
+          </div>
+          <input type="radio" name="time" value="3:00 PM – 4:00 PM" class="w-5 h-5 accent-pink-500 rounded-full">
+        </label>
+
+        <label class="time-card flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 hover:bg-pink-50/50 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span class="text-xl">🌇</span>
+            <span class="font-medium text-gray-700">4:00 PM – 5:00 PM</span>
+          </div>
+          <input type="radio" name="time" value="4:00 PM – 5:00 PM" class="w-5 h-5 accent-pink-500 rounded-full">
+        </label>
+
+        <label class="time-card flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 hover:bg-pink-50/50 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span class="text-xl">🌆</span>
+            <span class="font-medium text-gray-700">5:00 PM – 6:00 PM</span>
+          </div>
+          <input type="radio" name="time" value="5:00 PM – 6:00 PM" class="w-5 h-5 accent-pink-500 rounded-full">
+        </label>
+      </div>
+
+      <button id="btn-to-step-3" disabled class="w-full py-3.5 px-6 rounded-2xl font-semibold text-white bg-pink-300 cursor-not-allowed shadow transition-all duration-200 flex items-center justify-center gap-2">
+        <span>Continue</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </button>
+    </div>
+
+    <!-- STEP 3: Choose the Place -->
+    <div id="step-3" class="step-card glass-card rounded-3xl p-6 sm:p-10 text-center relative border border-pink-100 hidden">
+      <div class="inline-flex items-center justify-center w-14 h-14 bg-pink-100 text-pink-500 rounded-full mb-3 text-2xl shadow-inner">
+        🌸
+      </div>
+      <p class="text-xs font-semibold tracking-widest text-pink-400 uppercase mb-1">Step 2 of 2</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 font-script mb-2">
+        Where are we going? 🍧
+      </h2>
+      <p class="text-gray-500 text-sm mb-5">Pick your craving for tomorrow:</p>
+
+      <!-- Places List -->
+      <div class="space-y-2.5 text-left mb-6" id="place-options">
+        <label class="place-card flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl">🍧</span>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm sm:text-base">Playa Bowls</p>
+              <p class="text-xs text-gray-400">Sweet, fresh acai & smoothies</p>
+            </div>
+          </div>
+          <input type="radio" name="place" value="Playa Bowls" class="w-5 h-5 accent-pink-500">
+        </label>
+
+        <label class="place-card flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl">🧋</span>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm sm:text-base">Akihi</p>
+              <p class="text-xs text-gray-400">Bubble tea & tasty snacks</p>
+            </div>
+          </div>
+          <input type="radio" name="place" value="Akihi" class="w-5 h-5 accent-pink-500">
+        </label>
+
+        <label class="place-card flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl">🍜</span>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm sm:text-base">Ramen Gami</p>
+              <p class="text-xs text-gray-400">Warm, delicious ramen bowls</p>
+            </div>
+          </div>
+          <input type="radio" name="place" value="Ramen Gami" class="w-5 h-5 accent-pink-500">
+        </label>
+
+        <label class="place-card flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl">🏫</span>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm sm:text-base">NJIT</p>
+              <p class="text-xs text-gray-400">Campus stroll & chill</p>
+            </div>
+          </div>
+          <input type="radio" name="place" value="NJIT" class="w-5 h-5 accent-pink-500">
+        </label>
+
+        <!-- Other Option with expandable input -->
+        <label class="place-card flex flex-col p-3 sm:p-3.5 rounded-2xl border-2 border-pink-100 bg-white/70 hover:border-pink-300 cursor-pointer transition-all duration-200 shadow-sm">
+          <div class="flex items-center justify-between w-full">
+            <div class="flex items-center space-x-3">
+              <span class="text-2xl">✨</span>
+              <div>
+                <p class="font-semibold text-gray-800 text-sm sm:text-base">Other Idea...</p>
+                <p class="text-xs text-gray-400">Surprise me or pick another spot</p>
+              </div>
+            </div>
+            <input type="radio" name="place" value="Other" class="w-5 h-5 accent-pink-500">
+          </div>
+          <!-- Custom Input -->
+          <div id="other-input-container" class="mt-3 hidden pt-2 border-t border-pink-100">
+            <input type="text" id="other-place-text" placeholder="Type the place name here..." class="w-full px-3.5 py-2 text-sm bg-pink-50/50 rounded-xl border border-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-400 text-gray-700">
+          </div>
+        </label>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button id="btn-back-to-step-2" class="py-3 px-5 rounded-2xl font-medium text-pink-500 bg-pink-100/80 hover:bg-pink-100 transition duration-200">
+          Back
+        </button>
+        <button id="btn-submit" disabled class="flex-1 py-3.5 px-6 rounded-2xl font-semibold text-white bg-pink-300 cursor-not-allowed shadow transition-all duration-200 flex items-center justify-center gap-2">
+          <span>Save & Lock It In! 💌</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Confirmation & Instant Notification -->
+    <div id="step-4" class="step-card glass-card rounded-3xl p-6 sm:p-10 text-center relative border border-pink-100 hidden">
+      <!-- Heart celebration icon -->
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-tr from-pink-400 to-rose-400 text-white rounded-full mb-4 shadow-lg shadow-pink-300/50 text-4xl">
+        💖
+      </div>
+
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 font-script mb-2">
+        It's a Date! 🥰
+      </h2>
+      <p class="text-gray-500 text-sm mb-6">
+        I can't wait to see you tomorrow. Here is our official plan:
+      </p>
+
+      <!-- Plan summary pill -->
+      <div class="bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200 rounded-2xl p-5 mb-6 text-left shadow-sm">
+        <div class="flex items-center justify-between pb-3 border-b border-pink-100 mb-3">
+          <span class="text-xs font-semibold text-pink-500 uppercase tracking-wider">Scheduled Time</span>
+          <span id="summary-time" class="text-sm font-bold text-gray-800">--</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-pink-500 uppercase tracking-wider">Location</span>
+          <span id="summary-place" class="text-sm font-bold text-gray-800">--</span>
+        </div>
+      </div>
+
+      <!-- Transmission Status Feedback -->
+      <div id="status-box" class="py-2.5 px-4 rounded-xl text-xs sm:text-sm font-medium mb-5 bg-pink-50 text-pink-600 border border-pink-200 flex items-center justify-center gap-2">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-pink-500 animate-ping"></span>
+        <span>Sending your response to Nurudeen...</span>
+      </div>
+
+      <!-- Quick Action Buttons for Text / Email Direct -->
+      <div class="space-y-2.5">
+        <a id="btn-sms" href="#" class="w-full inline-flex items-center justify-center gap-2 py-3 px-5 bg-gradient-to-r from-pink-500 to-rose-400 hover:from-pink-600 hover:to-rose-500 text-white font-semibold rounded-2xl shadow-md shadow-pink-300/50 transition-all duration-200 text-sm">
+          <span>Send Confirmation via Text / iMessage 💬</span>
+        </a>
+        <a id="btn-email-fallback" href="#" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-white text-gray-600 hover:bg-gray-50 font-medium rounded-2xl border border-pink-200 text-xs transition duration-200">
+          <span>Open Email Client ✉️</span>
+        </a>
+      </div>
+
+      <p class="text-[11px] text-gray-400 mt-5">
+        Made with ❤️ specifically for you
+      </p>
+    </div>
+
+  </main>
+
+  <script>
+    // State management
+    const state = {
+      selectedTime: '',
+      selectedPlace: '',
+      userEmail: 'ademolanuru27@gmail.com'
+    };
+
+    // DOM Elements
+    const step1 = document.getElementById('step-1');
+    const step2 = document.getElementById('step-2');
+    const step3 = document.getElementById('step-3');
+    const step4 = document.getElementById('step-4');
+
+    const btnYes = document.getElementById('btn-yes');
+    const btnNo = document.getElementById('btn-no');
+    const arena = document.getElementById('arena');
+
+    const btnToStep3 = document.getElementById('btn-to-step-3');
+    const btnBackToStep2 = document.getElementById('btn-back-to-step-2');
+    const btnSubmit = document.getElementById('btn-submit');
+
+    const otherInputContainer = document.getElementById('other-input-container');
+    const otherPlaceText = document.getElementById('other-place-text');
+
+    const summaryTime = document.getElementById('summary-time');
+    const summaryPlace = document.getElementById('summary-place');
+    const statusBox = document.getElementById('status-box');
+    const btnSms = document.getElementById('btn-sms');
+    const btnEmailFallback = document.getElementById('btn-email-fallback');
+
+    // ----------------------------------------------------
+    // 1. PETAL BACKGROUND ANIMATION GENERATOR
+    // ----------------------------------------------------
+    function createPetals() {
+      const container = document.getElementById('petals-container');
+      const petalTypes = ['🌸', '🤍', '✨', '🌺', '🌷', '💕'];
+      const totalPetals = 16;
+
+      for (let i = 0; i < totalPetals; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal text-lg select-none';
+        petal.textContent = petalTypes[Math.floor(Math.random() * petalTypes.length)];
+        petal.style.left = `${Math.random() * 100}vw`;
+        petal.style.animationDuration = `${6 + Math.random() * 7}s`;
+        petal.style.animationDelay = `${Math.random() * 6}s`;
+        petal.style.opacity = (0.2 + Math.random() * 0.4).toString();
+        container.appendChild(petal);
+      }
+    }
+    createPetals();
+
+    // ----------------------------------------------------
+    // 2. THE RUNAWAY "NO" BUTTON LOGIC
+    // ----------------------------------------------------
+    let dodgeCount = 0;
+    const sarcasticRemarks = [
+      "No 🙅‍♀️",
+      "Are you sure? 🥺",
+      "Wrong button! 🙈",
+      "Almost had it! 💨",
+      "Nice try! 🏃‍♀️",
+      "Still no! 😜",
+      "Can't catch me! ✨"
+    ];
+
+    function dodgeNoButton() {
+      dodgeCount++;
+      const arenaRect = arena.getBoundingClientRect();
+      const btnRect = btnNo.getBoundingClientRect();
+
+      // Calculate bounds so the button stays inside the arena nicely
+      const padding = 12;
+      const maxX = arenaRect.width - btnRect.width - padding;
+      const maxY = arenaRect.height - btnRect.height - padding;
+
+      // Random new coordinate inside arena
+      const randomX = Math.max(padding, Math.random() * maxX);
+      const randomY = Math.max(padding, Math.random() * maxY);
+
+      btnNo.style.left = `${randomX}px`;
+      btnNo.style.top = `${randomY}px`;
+      btnNo.style.transform = `none`;
+
+      // Cycle through funny remarks
+      btnNo.innerText = sarcasticRemarks[dodgeCount % sarcasticRemarks.length];
+
+      // Subtle celebration confetti trigger for making an attempt
+      if (typeof confetti === 'function' && dodgeCount % 3 === 0) {
+        confetti({
+          particleCount: 15,
+          spread: 45,
+          origin: {
+            x: (arenaRect.left + randomX) / window.innerWidth,
+            y: (arenaRect.top + randomY) / window.innerHeight
+          },
+          colors: ['#f472b6', '#fda4af']
+        });
+      }
+    }
+
+    // Trigger dodge on both desktop hover and mobile touch/click
+    btnNo.addEventListener('mouseenter', dodgeNoButton);
+    btnNo.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      dodgeNoButton();
+    });
+    btnNo.addEventListener('click', (e) => {
+      e.preventDefault();
+      dodgeNoButton();
+    });
+
+    // ----------------------------------------------------
+    // 3. STEP TRANSITIONS & CONFETTI
+    // ----------------------------------------------------
+    btnYes.addEventListener('click', () => {
+      // Big confetti explosion
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#ec4899', '#f43f5e', '#fb7185', '#ffffff']
+        });
+      }
+
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+    });
+
+    // Handle Time Selection
+    const timeRadios = document.querySelectorAll('input[name="time"]');
+    timeRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        state.selectedTime = e.target.value;
+        
+        // Highlight active card style
+        document.querySelectorAll('.time-card').forEach(card => {
+          card.classList.remove('border-pink-500', 'bg-pink-50/80');
+          card.classList.add('border-pink-100');
+        });
+        e.target.closest('.time-card').classList.add('border-pink-500', 'bg-pink-50/80');
+        e.target.closest('.time-card').classList.remove('border-pink-100');
+
+        // Enable continue button
+        btnToStep3.disabled = false;
+        btnToStep3.classList.remove('bg-pink-300', 'cursor-not-allowed');
+        btnToStep3.classList.add('bg-gradient-to-r', 'from-pink-500', 'to-rose-400', 'hover:from-pink-600', 'hover:to-rose-500', 'shadow-md', 'shadow-pink-300/50');
+      });
+    });
+
+    btnToStep3.addEventListener('click', () => {
+      step2.classList.add('hidden');
+      step3.classList.remove('hidden');
+    });
+
+    btnBackToStep2.addEventListener('click', () => {
+      step3.classList.add('hidden');
+      step2.classList.remove('hidden');
+    });
+
+    // Handle Place Selection
+    const placeRadios = document.querySelectorAll('input[name="place"]');
+    placeRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const val = e.target.value;
+        
+        // Style updates
+        document.querySelectorAll('.place-card').forEach(card => {
+          card.classList.remove('border-pink-500', 'bg-pink-50/80');
+          card.classList.add('border-pink-100');
+        });
+        e.target.closest('.place-card').classList.add('border-pink-500', 'bg-pink-50/80');
+        e.target.closest('.place-card').classList.remove('border-pink-100');
+
+        if (val === 'Other') {
+          otherInputContainer.classList.remove('hidden');
+          otherPlaceText.focus();
+          state.selectedPlace = otherPlaceText.value.trim() || 'Other';
+        } else {
+          otherInputContainer.classList.add('hidden');
+          state.selectedPlace = val;
+        }
+
+        updatePlaceSubmitButton();
+      });
+    });
+
+    otherPlaceText.addEventListener('input', (e) => {
+      state.selectedPlace = e.target.value.trim() ? `Other: ${e.target.value.trim()}` : '';
+      updatePlaceSubmitButton();
+    });
+
+    function updatePlaceSubmitButton() {
+      const isValid = Boolean(state.selectedPlace);
+      btnSubmit.disabled = !isValid;
+      if (isValid) {
+        btnSubmit.classList.remove('bg-pink-300', 'cursor-not-allowed');
+        btnSubmit.classList.add('bg-gradient-to-r', 'from-pink-500', 'to-rose-400', 'hover:from-pink-600', 'hover:to-rose-500', 'shadow-md', 'shadow-pink-300/50');
+      } else {
+        btnSubmit.classList.add('bg-pink-300', 'cursor-not-allowed');
+        btnSubmit.classList.remove('bg-gradient-to-r', 'from-pink-500', 'to-rose-400', 'hover:from-pink-600', 'hover:to-rose-500', 'shadow-md', 'shadow-pink-300/50');
+      }
+    }
+
+    // ----------------------------------------------------
+    // 4. FINAL SUBMISSION & NOTIFICATION DISPATCH
+    // ----------------------------------------------------
+    btnSubmit.addEventListener('click', async () => {
+      step3.classList.add('hidden');
+      step4.classList.remove('hidden');
+
+      // Update UI summary details
+      summaryTime.textContent = state.selectedTime;
+      summaryPlace.textContent = state.selectedPlace;
+
+      // Celebrate
+      if (typeof confetti === 'function') {
+        const end = Date.now() + 2.5 * 1000;
+        const colors = ['#ec4899', '#f43f5e', '#a855f7', '#fb7185'];
+        (function frame() {
+          confetti({
+            particleCount: 4,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: colors
+          });
+          confetti({
+            particleCount: 4,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: colors
+          });
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+      }
+
+      // Prepare text / mail messages
+      const subject = encodeURIComponent("It's a Date! Tomorrow 💕");
+      const messageBody = `Hey Nurudeen! I said YES! 💕\n\nHere are our details for tomorrow:\n• Time: ${state.selectedTime}\n• Place: ${state.selectedPlace}\n\nCan't wait! 🥰`;
+
+      // Set SMS & Mailto links
+      btnSms.href = `sms:?&body=${encodeURIComponent(messageBody)}`;
+      btnEmailFallback.href = `mailto:${state.userEmail}?subject=${subject}&body=${encodeURIComponent(messageBody)}`;
+
+      // Attempt automated background dispatch via Formspree API
+      try {
+        const response = await fetch(`https://formspree.io/f/mqaelrwp`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            recipient: state.userEmail,
+            time: state.selectedTime,
+            place: state.selectedPlace,
+            response: "YES 💕"
+          })
+        });
+
+        // Update status pill to confirmed
+        statusBox.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-medium mb-5 bg-green-50 text-green-700 border border-green-200 flex items-center justify-center gap-2";
+        statusBox.innerHTML = `<span>Sent to Nurudeen's inbox! Confirmed! ✅</span>`;
+      } catch (err) {
+        // Fallback indicator
+        statusBox.className = "py-2.5 px-4 rounded-xl text-xs sm:text-sm font-medium mb-5 bg-pink-100 text-pink-700 border border-pink-200 flex items-center justify-center gap-2";
+        statusBox.innerHTML = `<span>All saved! Tap below to send me a quick text to seal it! 💌</span>`;
+      }
+    });
+  </script>
+</body>
+</html>
